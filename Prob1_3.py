@@ -7,6 +7,7 @@ A=np.array([
     [-10.0,6.0,-2.0],
     [2.1,2.0,-4.0]
 ])
+#print(np.linalg.svd(A))
 
 def special_cholesky(R,length): # R is tridagonal and symmetric, use accelarated method
     d = R.diagonal(0)
@@ -44,8 +45,9 @@ def QR_iteration(B,U,V):
         Q_store[:length-i,:length-i] = Q_i
         vector = vector@Q_store
     e_val.append(next[0,0]**2)
-    value = np.array(e_val[::-1])
+    value = np.sqrt(np.array(e_val[::-1]))
     U_B = C@vector@np.diag((1/value)) #calculate decomposition of B
+    #print(U_B@np.diag(np.sqrt(value))@vector.T)
     U_A = U.T@U_B  # need to improve **
     V_A = V@vector # need to imporve **
     sig_A = np.diag(value)
@@ -53,9 +55,13 @@ def QR_iteration(B,U,V):
 
 #Implementation
 B,U,V = Bidiagonalization(A)
+#print(B)
 U_A,sig_A,V_A = QR_iteration(B,U,V) # eigenval and vector of BTB
 #print(vector)
 #print(vector@np.diag(value)@vector.T)
 #print(U_B@np.diag(value)@vector.T)
 
+#print(U_A)
+#print(sig_A)
+#print(V_A)
 print(U_A@sig_A@V_A.T) #verification
