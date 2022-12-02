@@ -3,12 +3,10 @@ from Prob1_1 import Bidiagonalization
 #This program is to implement a alternative QR iteration
 
 A=np.array([
-    [10.0,-52.0,-3.0],
-    [-1.0,60.0,-22.0],
-    [2.0,2.0,-4.0]
+    [10.0,-52.3,-3.2],
+    [-10.0,6.0,-2.0],
+    [2.1,2.0,-4.0]
 ])
-
-
 
 def special_cholesky(R,length): # R is tridagonal and symmetric, use accelarated method
     d = R.diagonal(0)
@@ -48,8 +46,8 @@ def QR_iteration(B,U,V):
     e_val.append(next[0,0]**2)
     value = np.array(e_val[::-1])
     U_B = C@vector@np.diag((1/value)) #calculate decomposition of B
-    U_A = np.linalg.inv(U)@U_B  # need to improve **
-    V_A = np.linalg.inv(V).T@vector # need to imporve **
+    U_A = U.T@U_B  # need to improve **
+    V_A = V@vector # need to imporve **
     sig_A = np.diag(value)
     return U_A,sig_A,V_A
 
