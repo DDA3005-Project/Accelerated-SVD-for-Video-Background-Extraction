@@ -7,12 +7,8 @@ A=np.array([
     [-1.0,60.0,-22.0],
     [2.0,2.0,-4.0]
 ])
-B,U,V = Bidiagonalization(A)
-C = np.array(B) #copy of B
 
-#print(B.T@B)
-#W,S,X = np.linalg.svd(B.T@B)
-#print(W@np.diag(S)@W.T)
+
 
 def special_cholesky(R,length): # R is tridagonal and symmetric, use accelarated method
     d = R.diagonal(0)
@@ -37,23 +33,31 @@ def iter_in_each_row(B,length):
             B[i,i+1] = super_dia[i]
     return B[:length-1,:length-1], B[length-1,length-1],Q_sum
         
-def QR_iteration(B):
+def QR_iteration(B,U,V):
+    C = np.array(B) #copy of B
     length,wid = np.shape(B)
     e_val = []
     next = B
-    e_vec = np.identity(length)
+    vector = np.identity(length)
     for i in range(length-1):
         Q_store = np.identity(length)
         next,eigen_val,Q_i = iter_in_each_row(next,length-i)
         e_val.append(eigen_val**2)
         Q_store[:length-i,:length-i] = Q_i
-        e_vec = e_vec@Q_store
+        vector = vector@Q_store
     e_val.append(next[0,0]**2)
-    return e_val[::-1],e_vec
+    value = np.array(e_val[::-1])
+    U_B = C@vector@np.diag((1/value)) #calculate decomposition of B
+    U_A = np.linalg.inv(U)@U_B  # need to improve **
+    V_A = np.linalg.inv(V).T@vector # need to imporve **
+    sig_A = np.diag(value)
+    return U_A,sig_A,V_A
 
-value,vector = QR_iteration(B) # eigenval and vector of BTB
-#print(value)
+#Implementation
+B,U,V = Bidiagonalization(A)
+U_A,sig_A,V_A = QR_iteration(B,U,V) # eigenval and vector of BTB
 #print(vector)
 #print(vector@np.diag(value)@vector.T)
-U_B = C@vector@np.linalg.inv(np.diag(value)) #calculate decomposition of B
 #print(U_B@np.diag(value)@vector.T)
+
+print(U_A@sig_A@V_A.T) #verification
