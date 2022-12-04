@@ -8,3 +8,12 @@ Prob1_3 still need to imporve the performance of the accelerrated Cholesky, by a
 
 ##Prob
 sfjkdxcmfmvghbksncm
+
+## Prob1.py
+Prob1.py 是 Problem1 的所有 function
+
+## Prob2.py
+Prob2.py 是 Problem2 的所有 function
+
+## Prob2_deblur.ipynb
+Prob2_deblur.ipynb 是deblur的过程，可以用于测试优化好的代码能否成功deblur
