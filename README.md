@@ -17,3 +17,9 @@ Prob2.py 是 Problem2 的所有 function
 
 ## Prob2_deblur.ipynb
 Prob2_deblur.ipynb 是 final phase2a 和 final phase2b, 但是需要import Prob1.py和Prob2.py里面的function
+
+## Final_Phase2A.ipynb 
+Final_Phase2A.ipynb涵盖了blur，Phase I 和 Phase II A 的代码，以及deblur的代码
+
+## Final_Phase2B.ipynb 
+Final_Phase2B.ipynb 涵盖了blur，Phase I 和 Phase II B 的代码，以及deblur的代码
