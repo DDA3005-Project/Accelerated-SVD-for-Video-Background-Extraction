@@ -1,18 +1,6 @@
 import numpy as np
 # This program is to transform A into bidiagonal form utilizing householder
 
-
-#This program is to implement a alternative QR iteration
-A=np.array([
-    [10.0,-52.3,-3.2,9.8],
-    [-10.0,6.0,-2.0,7.5],
-    [2.1,2.0,-4.0,4.8]
-])
-# A = np.random.rand(216,216)
-# print(np.linalg.matrix_rank(A))
-# print(A)
-# print(np.linalg.svd(A)[1])
-
 def householder(b_r,length): # b is a vector that we want to only preserve b1, length is the longtitude of b_r
     beta = np.linalg.norm(b_r)
     v = np.array([0.0 for i in range(length)])
@@ -38,7 +26,7 @@ def Bidiagonalization(A):
         A[i:,i+1:] = np.matmul(H_U,A[i:,i+1:]) #update A utilizing U  列+1
         H1[i:,i:] = H_U
         H_all_U = H1@H_all_U
-        # print(np.round(A,4))
+        #print(np.round(A,4))
         H_V, entry_v = householder(A[i,i+1:],col-i-1) # gen V
         A[i,i+1] = entry_v
         A[i,i+2:] = 0
@@ -76,6 +64,21 @@ def Bidiagonalization(A):
                 H1[col-1:,col-1:] = H_U
                 H_all_U = H1@H_all_U
         return A,H_all_U,H_all_V
-      
-B, U, V = Bidiagonalization(A)
-print(U.T@B@V.T)
+    
+def auto_run(A):
+    row,col = np.shape(A)
+    diff = row - col
+    if diff < 0 :
+        result, U, V = Bidiagonalization(A.T)
+        return result.T, V.T, U.T
+    else:
+        result,U,V = Bidiagonalization(A)
+        return result, U, V
+
+A = np.array([
+    [1.0,3.0,2.5,43,43],
+    [2.3,4.5,2.5,23,52],
+    [2.4,2.5,2.6,52,7]
+])
+result,U,V = auto_run(A)
+print(np.round(U.T@result@V.T,5)) #verification
