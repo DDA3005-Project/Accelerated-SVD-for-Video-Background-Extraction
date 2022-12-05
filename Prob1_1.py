@@ -64,10 +64,10 @@ def auto_run(A):
     diff = row - col
     if diff < 0 :
         result, U, V = Bidiagonalization(A.T)
-        return result.T, V.T, U.T
+        return result[:row,:], U[:row,:], V[:,:row],diff
     else:
         result,U,V = Bidiagonalization(A)
-        return result, U, V
+        return result[:col,:], U[:col,:], V[:,:col],diff
 
 '''
 A = np.array([
@@ -76,8 +76,8 @@ A = np.array([
     [2.4,2.5,2.6,52,7,2]
 ])
 
-A = np.random.rand(10000,5)
-result,U,V = auto_run(A)
-print(np.round(result,4))
-#print(np.round(U.T@result@V.T,5)) #verification
+#A = np.random.rand(10000,5)
+result,U,V,diff = auto_run(A)
+#print(np.round(result,4))
+print(np.round(U.T@result@V.T,5)) #verification
 '''

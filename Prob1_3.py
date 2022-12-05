@@ -1,19 +1,19 @@
 import numpy as np
-from Prob1_1 import Bidiagonalization
+from Prob1_1 import auto_run
 import time
 #This program is to implement a alternative QR iteration
-'''
-A=np.array([
-    [10.0,-52.3,-3.2],
-    [-10.0,6.0,-2.0],
-    [2.1,2.0,-4.0]
+
+A = np.array([
+    [1.0,3.0,2.5,43,43,65],
+    [2.3,4.5,2.5,23,52,1],
+    [2.4,2.5,2.6,52,7,2]
 ])
-'''
-A = np.random.rand(216,216)
+
+#A = np.random.rand(216,216)
 #print(np.linalg.matrix_rank(A))
 #print(A)
-#print(np.linalg.svd(A)[1])
-
+#test_package = np.round(np.linalg.svd(A)[2],4)
+#print(test_package)
 def special_cholesky(R,length): # R is tridagonal and symmetric, use accelarated method
     d = R.diagonal(0)
     a = R.diagonal(1)
@@ -32,15 +32,15 @@ def iter_in_each_row(B,length,type):
         Q_sum = Q_sum@Q
         if type == 'special':
             dia,super_dia = special_cholesky(R@R.T,length)
-            B = np.diag(dia)
-            B[:length-1,1:length] += np.diag(super_dia)
+            B = np.diag(dia,0)
+            B += np.diag(super_dia,1)
         #print(R)
         #print(R@R.T)
         else:
             B = np.linalg.cholesky(R@R.T).T #use common Cholesky decomposition
     return B[:length-1,:length-1], B[length-1,length-1],Q_sum  #B, Q_sum 
         
-def QR_iteration(B,U,V,type=None):
+def QR_iteration(B,U,V,diff,type=None):
     C = np.array(B) #copy of B
     length,wid = np.shape(B)
     e_val = []
@@ -54,39 +54,29 @@ def QR_iteration(B,U,V,type=None):
         Q_store[:length-i,:length-i] = Q_i
         vector = vector@Q_store
     e_val.append(next[0,0])
-    #'''
-    #e_val,vector = iter_in_each_row(B,length)
     value = np.array(e_val)
-    #value = e_val.diagonal(0)
     value = value[::-1]
-    #print(value)
     U_B = C@vector@np.diag((1/value)) #calculate decomposition of B
-    #print(np.round(U_B.T,1) == np.round(np.linalg.inv(U_B),1))
-    #print(U_B@np.diag(np.sqrt(value))@vector.T)
     U_A = U.T@U_B
     V_A = V@vector 
     sig_A = np.diag(value)
-    #print(value)
-    return U_A,sig_A,V_A
+    if diff >= 0:
+        return U_A,sig_A,V_A
+    else:
+        return V_A,sig_A,U_A
 
 #Implementation
-B,U,V = Bidiagonalization(A)
-#print(np.linalg.svd(B)[1])
+B,U,V,diff = auto_run(A)
+#print(np.linalg.svd(B)[2])
 #print(np.round(np.linalg.svd(B)[0].T,1) == np.round(np.linalg.inv(np.linalg.svd(B)[0]),1))
-timestart = time.time()
-U_A,sig_A,V_A = QR_iteration(B,U,V,'special') # eigenval and vector of BTB
-timeend = time.time()
-print(timeend-timestart)
-timestart = time.time()
-U_A,sig_A,V_A = QR_iteration(B,U,V) # eigenval and vector of BTB
-timeend = time.time()
-print(timeend-timestart)
-#print(np.round(U_A.T,1) == np.round(np.linalg.inv(U_A),1))
-#print(vector)
-#print(vector@np.diag(value)@vector.T)
-#print(U_B@np.diag(value)@vector.T)
 
-#print(U_A)
-#print(sig_A)
-#print(V_A)
-#print(U_A@sig_A@V_A.T) #verification
+timestart = time.time()
+U_A,sig_A,V_A = QR_iteration(B,U,V,diff,'special') # eigenval and vector of BTB
+timeend = time.time()
+print(timeend-timestart)
+
+timestart = time.time()
+U_A,sig_A,V_A = QR_iteration(B,U,V,diff) # 输出的V是竖着的!!
+#print(U_A@sig_A@V_A.T)
+timeend = time.time()
+print(timeend-timestart)
