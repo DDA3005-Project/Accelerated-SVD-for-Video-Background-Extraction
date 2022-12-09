@@ -87,9 +87,9 @@ def QR_factorization(B,diff):
     UA = U.T@UB
     VA = VB.T@V.T
     if diff >= 0:
-        return UA,sigma,VA.T
+        return UA,eigenvalues,VA.T
     else:
-        return VA.T,sigma.T,UA
+        return VA.T,eigenvalues,UA
 
 B,U,V,diff = auto_run(A) #Note: please change your code! add variable DIFF
 UA,sig,VA=QR_factorization(B,diff) #输出的V是竖着的!!
