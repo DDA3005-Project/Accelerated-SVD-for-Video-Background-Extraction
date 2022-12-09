@@ -64,10 +64,10 @@ def auto_run(A):
     diff = row - col
     if diff < 0 :
         result, U, V = Bidiagonalization(A.T)
-        return result[:row,:], U[:row,:], V[:,:row],diff
+        return result[:row,:],U,V,diff #result[:row,:], U[:row,:], V[:,:row],diff
     else:
         result,U,V = Bidiagonalization(A)
-        return result[:col,:], U[:col,:], V[:,:col],diff
+        return result[:col,:],U,V,diff #result[:col,:], U[:col,:], V[:,:col],diff
 
 '''
 A = np.array([

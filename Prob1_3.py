@@ -56,14 +56,20 @@ def QR_iteration(B,U,V,diff,type=None):
     e_val.append(next[0,0])
     value = np.array(e_val)
     value = value[::-1]
-    U_B = C@vector@np.diag((1/value)) #calculate decomposition of B
-    U_A = U.T@U_B
-    V_A = V@vector 
-    sig_A = np.diag(value)
-    if diff >= 0:
-        return U_A,sig_A,V_A
+    U_tranb = C@vector@np.diag((1/value))
+    if diff != 0:
+        sigma = np.pad(np.diag(value),((0,np.abs(diff)),(0,0)),'constant')
+        UB = np.identity(len(U_tranb)+np.abs(diff))
+        UB[:len(U_tranb),:len(U_tranb)] = U_tranb
     else:
-        return V_A,sig_A,U_A
+        sigma = np.diag(value)
+        UB = U_tranb
+    U_A = U.T@UB
+    V_A = V@vector 
+    if diff >= 0:
+        return U_A,sigma,V_A
+    else:
+        return V_A,sigma.T,U_A
 
 #Implementation
 B,U,V,diff = auto_run(A)

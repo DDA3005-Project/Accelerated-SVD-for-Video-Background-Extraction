@@ -76,15 +76,22 @@ def QR_factorization(B,diff):
     eigenvalues.sort()
     eigenvalues = eigenvalues[::-1]
     VB = VB[:,idx[::-1]]
-    UB = B@VB@np.diag((1/np.abs(eigenvalues)))
+    U_tranb = B@VB@np.diag((1/np.abs(eigenvalues)))
+    if diff != 0:
+        sigma = np.pad(np.diag(eigenvalues),((0,np.abs(diff)),(0,0)),'constant')
+        UB = np.identity(len(U_tranb)+np.abs(diff))
+        UB[:len(U_tranb),:len(U_tranb)] = U_tranb
+    else:
+        sigma = np.diag(eigenvalues)
+        UB = U_tranb
     UA = U.T@UB
     VA = VB.T@V.T
     if diff >= 0:
-        return UA,eigenvalues,VA.T
+        return UA,sigma,VA.T
     else:
-        return VA.T,eigenvalues,UA
+        return VA.T,sigma.T,UA
 
 B,U,V,diff = auto_run(A) #Note: please change your code! add variable DIFF
 UA,sig,VA=QR_factorization(B,diff) #输出的V是竖着的!!
-#print(UA@np.diag(sig)@VA.T) 
+#print(UA@sig@VA.T) 
 
